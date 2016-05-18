@@ -39,8 +39,7 @@ class TestKnownHosts(unittest.TestCase):
                 vagrant_root=self.valid_vagrant_root),
             known_hosts)
 
-        self.vagrant_instance._run_vagrant_command.assert_called_with(
-            ('ssh', 'second.machine.example.org', '-c', 'cat /etc/hosts'))
+        self.assertTrue(self.vagrant_instance._run_vagrant_command.called)
 
     def test_on_a_valid_vagrant_root_path_with_specific_host(self):
         known_hosts = {'first.machine.example.org': '1.1.1.1', 'second.machine.example.org': '2.3.4.5'}

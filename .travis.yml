@@ -1,8 +1,15 @@
 language: python
 python:
-  - "2.7"
-
+- '2.7'
 install:
-  - 'pip install tox'
-
+- pip install tox
 script: tox -r
+deploy:
+  provider: pypi
+  user: internaphosting
+  password:
+    secure: A835rvWzr4CY46o+1maKTT3vA2fRUFJc1G+vIaPlKoFxZlJJ/8KFDJD9v8gXyCHqrcm6qY1x/OfFMuHQaHncqxeomxwko5gfE8W4CIsvEOQ9lwUg+KjAG/OugeBHPxV9yFEpvV26/1bJmVpBSLDg/qiZfkF8b1JdpUKHFHQEaeUK8Lbl51nwoXk8eGfN8Oj8LfGF1v+XNopx2Mi+t8J2NS61WkFbFOrOXI4+e7mkpttPMr7an5/PfUFNH7MHhhhIoUrEa3V0/ce0S4JZD/hwfB7MDttdyVS503qeA+R8KSsamND8PrQfUDvOT2UJQucM73wLOg+eRlUUYDR6YcKKL7TiSd8d8TlLv588hu1sO6oey8Pl6gIn1h5U6/peh5EKCmOkHO677OD2MN3vKUd4aZ80NYfRzLGLsQyRjkGCE009Y7G6A+IJR22+LsEhQL3hUqUZIYCBd04fXSWK4V82ZUZP2cxCVhqbibpSfpSWTg/bplBAYgoZm6y1somSkltrYIRhjEyF8+FaJ4Ntm5ZmfM6u3trSQtXe/ZF2kBV8iGyJ0i5Ut5jowQng5ARsDRARun3Zt5dajozcOqjRWXS1H68yR7DfhpVtociO7oviyugsQgY2dkseYOCV/aB3RlquyqOU6Ik+jF+PwxCJruYXW9Jb8Y/0xNoUFwLsw76+bB8=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: internap/python-hostsresolver
