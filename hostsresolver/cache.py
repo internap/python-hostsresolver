@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import socket
+import sys
 
 _getaddrinfo = socket.getaddrinfo
 _gethostbyname = socket.gethostbyname
@@ -63,14 +64,22 @@ def install():
 
     socket.getaddrinfo = getaddrinfo
     socket.gethostbyname = gethostbyname
-    socket.socket = SocketType
     socket.SocketType = SocketType
     socket.create_connection = create_connection
+    if sys.version_info > (3,):
+        import _socket
+        _socket.socket = SocketType
+    else:
+        socket.socket = SocketType
 
 
 def uninstall():
     socket.getaddrinfo = _getaddrinfo
     socket.gethostbyname = _gethostbyname
-    socket.socket = _SocketType
     socket.SocketType = _SocketType
     socket.create_connection = _create_connection
+    if sys.version_info > (3,):
+        import _socket
+        _socket.socket = _SocketType
+    else:
+        socket.socket = SocketType
