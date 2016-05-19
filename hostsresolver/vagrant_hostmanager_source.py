@@ -10,18 +10,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-
 from vagrant import Vagrant
 
 from hostsresolver.hostsfile_source import parse_content
-from hostsresolver.vagrant_source import list_machines
+from hostsresolver.vagrant_source import list_machines, lookup_vagrant_root
 from hostsresolver.cache import update
 from hostsresolver.cache import install as _install_cache
 
 
 def known_hosts(vagrant_root, name=None):
-    vagrant_root = os.path.abspath(vagrant_root) if vagrant_root is not None else os.getcwd()
+    vagrant_root = lookup_vagrant_root(vagrant_root)
     vagrant = Vagrant(vagrant_root)
 
     machines = list_machines(vagrant_root)

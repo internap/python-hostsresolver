@@ -18,16 +18,32 @@ from vagrant import Vagrant
 from hostsresolver.cache import update
 from hostsresolver.cache import install as _install_cache
 
-vagrant_machines_path = '.vagrant/machines/*/*/id'
+VAGRANT_DOTFILE_PATH = os.environ.get('VAGRANT_DOTFILE_PATH', '.vagrant')
+VAGRANT_VAGRANTFILE = os.environ.get('VAGRANT_VAGRANTFILE', 'Vagrantfile')
+VAGRANT_CWD = os.environ.get('VAGRANT_CWD', os.getcwd())
+
+vagrant_machines_path = 'machines/*/*/id'.format(**locals())
+
+
+def lookup_vagrant_root(vagrant_root=None):
+    vagrant_root = VAGRANT_CWD if vagrant_root is None else vagrant_root
+
+    path = os.path.abspath(vagrant_root)
+    while path != os.path.dirname(path):
+        if os.path.exists(os.path.join(path, VAGRANT_VAGRANTFILE)):
+            return path
+        path = os.path.dirname(path)
+    return vagrant_root
 
 
 def list_machines(vagrant_root=None):
-    vagrant_root = os.path.abspath(vagrant_root) if vagrant_root is not None else os.getcwd()
-    return [path.split(os.path.sep)[-3] for path in glob.glob(os.path.join(vagrant_root, vagrant_machines_path))]
+    vagrant_root = lookup_vagrant_root(vagrant_root)
+    search_path = os.path.join(vagrant_root, VAGRANT_DOTFILE_PATH, vagrant_machines_path)
+    return [path.split(os.path.sep)[-3] for path in glob.glob(search_path)]
 
 
 def known_hosts(vagrant_root):
-    vagrant_root = os.path.abspath(vagrant_root) if vagrant_root is not None else os.getcwd()
+    vagrant_root = lookup_vagrant_root(vagrant_root)
     vagrant = Vagrant(vagrant_root)
     return {machine: vagrant.hostname(machine) for machine in list_machines(vagrant_root)}
 
