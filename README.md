@@ -1,5 +1,7 @@
 python-hostsresolver
 ====================
+[![Build Status](https://travis-ci.org/internap/python-hostsresolver.svg?branch=master)](https://travis-ci.org/internap/python-hostsresolver)
+[![PyPI version](https://badge.fury.io/py/python-hostsresolver.svg)](http://badge.fury.io/py/python-hostsresolver)
 
 Translate ephemeral virtual machines names into IP addresses for python
 projects without requiring any modification to the libraries or any

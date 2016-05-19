@@ -1,4 +1,8 @@
 .idea
 .tox
-python-hostsresolver.iml
-MANIFEST
+.eggs
+*.egg-info
+*.iml
+*.pyc
+AUTHORS
+ChangeLog
