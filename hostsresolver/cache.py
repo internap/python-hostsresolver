@@ -41,13 +41,19 @@ def create_connection(address, *args, **kwargs):
 
 
 class SocketType(_SocketType):
+    def _use_host_cache(self, address):
+        try:
+            return (gethostbyname(address[0]), address[1])
+        except socket.gaierror:
+            # The address[0] could be an unknown host to socket.gethostbyname
+            # but known to socket.connect, such cases include unix sockets.
+            return address
+
     def connect(self, address):
-        new_address = (gethostbyname(address[0]), address[1])
-        return _SocketType.connect(self, new_address)
+        return _SocketType.connect(self, self._use_host_cache(address))
 
     def connect_ex(self, address):
-        new_address = (gethostbyname(address[0]), address[1])
-        return _SocketType.connect_ex(self, new_address)
+        return _SocketType.connect_ex(self, self._use_host_cache(address))
 
 
 def update(hosts):

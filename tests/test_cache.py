@@ -15,6 +15,8 @@
 import socket
 import unittest
 
+import mock
+
 from hostsresolver import cache
 
 
@@ -103,3 +105,33 @@ class TestGetAddrInfo(unittest.TestCase):
              (10, 1, 6, '', ('2001:4860:4860::8888', 53, 0, 0)),
              (10, 2, 17, '', ('2001:4860:4860::8888', 53, 0, 0)),
              (10, 3, 0, '', ('2001:4860:4860::8888', 53, 0, 0))])
+
+
+class TestConnect(unittest.TestCase):
+    def setUp(self):
+        cache.install()
+
+    def tearDown(self):
+        cache.uninstall()
+
+    @mock.patch("hostsresolver.cache._gethostbyname")
+    @mock.patch("hostsresolver.cache._SocketType")
+    def test_uses_real_gethostname_result(self, socket_mock, gethost_mock):
+        gethost_mock.return_value = "1.1.1.1"
+
+        s = socket.SocketType()
+        s.connect(("some_url", 123))
+
+        socket_mock.connect.assert_called_once_with(s, ("1.1.1.1", 123))
+        gethost_mock.assert_called_once_with("some_url")
+
+    @mock.patch("hostsresolver.cache._gethostbyname")
+    @mock.patch("hostsresolver.cache._SocketType")
+    def test_ignore_unresolved_hosts_and_pass_them_to_connect(self, socket_mock, gethost_mock):
+        gethost_mock.side_effect = socket.gaierror
+
+        s = socket.SocketType()
+        s.connect(("/var/run/something", 123))
+
+        socket_mock.connect.assert_called_once_with(s, ("/var/run/something", 123))
+        gethost_mock.assert_called_once_with("/var/run/something")
